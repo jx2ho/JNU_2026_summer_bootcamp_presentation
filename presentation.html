@@ -1,0 +1,645 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="메밀 개인 일정 플래너 5분 발표 자료">
+  <title>메밀 | 5분 프로젝트 발표</title>
+  <style>
+    :root {
+      --primary: #386fc8;
+      --primary-dark: #2758a8;
+      --primary-soft: #edf4ff;
+      --purple: #7957bc;
+      --purple-soft: #f4efff;
+      --success: #278a59;
+      --success-soft: #eaf7ef;
+      --warning: #a36f08;
+      --warning-soft: #fff7dc;
+      --danger: #d34a4a;
+      --danger-soft: #fff0f0;
+      --ink: #1e2a3d;
+      --ink-soft: #536078;
+      --muted: #7d8798;
+      --line: #e2e7ef;
+      --canvas: #f4f6fa;
+      --surface: #ffffff;
+      --shadow: 0 24px 70px rgba(30, 42, 61, .14);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body { margin: 0; min-height: 100%; }
+
+    body {
+      min-width: 320px;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 12% 10%, rgba(56, 111, 200, .13), transparent 29%),
+        radial-gradient(circle at 90% 82%, rgba(121, 87, 188, .10), transparent 25%),
+        var(--canvas);
+      font-family: Pretendard, "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+      word-break: keep-all;
+    }
+
+    button, a { font: inherit; }
+
+    .slide {
+      position: relative;
+      width: min(100%, 1600px);
+      min-height: 100svh;
+      margin: 0 auto;
+      padding: clamp(24px, 3vw, 48px);
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: clamp(20px, 2.2vw, 34px);
+      overflow: hidden;
+    }
+
+    .slide::before,
+    .slide::after {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      border-radius: 999px;
+      filter: blur(1px);
+      pointer-events: none;
+    }
+
+    .slide::before {
+      top: -170px;
+      right: 19%;
+      width: 360px;
+      height: 360px;
+      border: 1px solid rgba(56, 111, 200, .12);
+    }
+
+    .slide::after {
+      bottom: -180px;
+      left: -80px;
+      width: 420px;
+      height: 420px;
+      border: 1px solid rgba(121, 87, 188, .10);
+    }
+
+    .topbar {
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-mark {
+      width: 46px;
+      height: 46px;
+      flex: 0 0 auto;
+      filter: drop-shadow(0 8px 18px rgba(56, 111, 200, .23));
+    }
+
+    .brand-name { font-size: 20px; font-weight: 900; letter-spacing: -.04em; }
+    .brand-caption { margin-top: 2px; color: var(--muted); font-size: 11px; font-weight: 750; letter-spacing: .12em; }
+
+    .top-actions { display: flex; align-items: center; gap: 10px; }
+
+    .timer,
+    .live-link {
+      min-height: 40px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-weight: 850;
+      text-decoration: none;
+      transition: transform .18s ease, box-shadow .18s ease;
+    }
+
+    .timer {
+      min-width: 92px;
+      padding: 0 15px;
+      border: 1px solid var(--line);
+      color: var(--ink-soft);
+      background: rgba(255, 255, 255, .74);
+      cursor: pointer;
+    }
+
+    .timer.running { color: var(--danger); border-color: #f0c4c4; background: var(--danger-soft); }
+
+    .live-link {
+      padding: 0 18px;
+      color: #fff;
+      background: linear-gradient(145deg, #4c83d8, #2e64bd);
+      box-shadow: 0 10px 22px rgba(56, 111, 200, .25);
+    }
+
+    .live-link::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #8ff1b5;
+      box-shadow: 0 0 0 4px rgba(143, 241, 181, .18);
+    }
+
+    .timer:hover,
+    .live-link:hover { transform: translateY(-2px); }
+
+    .main-grid {
+      min-height: 0;
+      display: grid;
+      grid-template-columns: minmax(390px, .88fr) minmax(540px, 1.12fr);
+      align-items: stretch;
+      gap: clamp(26px, 3vw, 54px);
+    }
+
+    .pitch {
+      padding: clamp(8px, 1.2vw, 18px) 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .eyebrow {
+      margin: 0 0 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .16em;
+    }
+
+    .eyebrow::before { content: ""; width: 28px; height: 2px; border-radius: 2px; background: var(--primary); }
+
+    h1 {
+      max-width: 650px;
+      margin: 0;
+      font-size: clamp(43px, 4.6vw, 72px);
+      line-height: 1.08;
+      letter-spacing: -.065em;
+    }
+
+    h1 em { color: var(--primary); font-style: normal; }
+
+    .lead {
+      max-width: 610px;
+      margin: 22px 0 0;
+      color: var(--ink-soft);
+      font-size: clamp(16px, 1.3vw, 20px);
+      line-height: 1.72;
+      letter-spacing: -.025em;
+    }
+
+    .lead strong { color: var(--ink); }
+
+    .feature-grid {
+      margin-top: clamp(26px, 3vw, 42px);
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 11px;
+    }
+
+    .feature {
+      min-height: 82px;
+      padding: 14px 15px;
+      border: 1px solid rgba(226, 231, 239, .92);
+      border-radius: 16px;
+      display: grid;
+      grid-template-columns: 37px 1fr;
+      align-items: center;
+      gap: 11px;
+      background: rgba(255, 255, 255, .76);
+      box-shadow: 0 8px 24px rgba(30, 42, 61, .045);
+    }
+
+    .feature-icon {
+      width: 37px;
+      height: 37px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      color: var(--primary);
+      background: var(--primary-soft);
+      font-size: 17px;
+      font-weight: 950;
+    }
+
+    .feature:nth-child(2) .feature-icon { color: var(--success); background: var(--success-soft); }
+    .feature:nth-child(3) .feature-icon { color: var(--warning); background: var(--warning-soft); }
+    .feature:nth-child(4) .feature-icon { color: var(--purple); background: var(--purple-soft); }
+    .feature strong { display: block; font-size: 14px; letter-spacing: -.025em; }
+    .feature span { display: block; margin-top: 4px; color: var(--muted); font-size: 11px; font-weight: 650; line-height: 1.35; }
+
+    .app-stage {
+      min-height: 0;
+      padding: clamp(10px, 1.5vw, 20px) 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .browser {
+      position: relative;
+      width: 100%;
+      max-width: 770px;
+      min-height: 510px;
+      border: 1px solid rgba(213, 220, 231, .9);
+      border-radius: 24px;
+      overflow: hidden;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      transform: perspective(1200px) rotateY(-2.6deg) rotateX(1deg);
+      transform-origin: center;
+    }
+
+    .browser::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .65);
+      pointer-events: none;
+    }
+
+    .browser-bar {
+      height: 45px;
+      padding: 0 16px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: #fafbfc;
+    }
+
+    .dot { width: 9px; height: 9px; border-radius: 50%; background: #d6dce6; }
+    .dot:nth-child(1) { background: #ef8e8e; }
+    .dot:nth-child(2) { background: #f1c66d; }
+    .dot:nth-child(3) { background: #76c996; }
+
+    .address {
+      height: 26px;
+      margin-left: 8px;
+      padding: 0 12px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      flex: 1;
+      color: #8791a1;
+      background: white;
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .app-body { min-height: 465px; display: grid; grid-template-columns: 128px 1fr; }
+
+    .sidebar {
+      padding: 18px 12px;
+      border-right: 1px solid var(--line);
+      background: #fbfcff;
+    }
+
+    .side-brand { display: flex; align-items: center; gap: 8px; margin: 0 5px 21px; font-size: 13px; font-weight: 900; }
+    .mini-mark { width: 25px; height: 25px; border-radius: 8px; display: grid; place-items: center; color: white; background: var(--primary); font-size: 10px; }
+
+    .nav-item {
+      height: 34px;
+      margin: 4px 0;
+      padding: 0 9px;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #667287;
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    .nav-item::before { content: ""; width: 7px; height: 7px; border: 1.5px solid currentColor; border-radius: 3px; }
+    .nav-item.active { color: var(--primary); background: var(--primary-soft); }
+    .sync { margin-top: 96px; color: var(--success); }
+    .sync::before { border-radius: 50%; background: #45ad77; border-color: #45ad77; }
+
+    .dashboard { padding: 25px 27px 22px; background: #fff; }
+
+    .dashboard-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+    .dashboard-header small { color: var(--primary); font-size: 9px; font-weight: 900; }
+    .dashboard h2 { margin: 5px 0 0; font-size: 22px; letter-spacing: -.055em; }
+    .add-button { height: 32px; padding: 0 12px; border-radius: 9px; display: flex; align-items: center; color: #fff; background: var(--primary); font-size: 10px; font-weight: 850; }
+
+    .summary-row { margin: 20px 0 16px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .summary-card { padding: 11px; border: 1px solid var(--line); border-radius: 11px; background: #fafbfc; }
+    .summary-card span { color: var(--muted); font-size: 8px; font-weight: 750; }
+    .summary-card strong { display: block; margin-top: 4px; font-size: 16px; }
+    .summary-card:nth-child(2) strong { color: var(--success); }
+    .summary-card:nth-child(3) strong { color: var(--danger); }
+
+    .progress-label { display: flex; justify-content: space-between; color: var(--ink-soft); font-size: 9px; font-weight: 800; }
+    .progress-track { height: 7px; margin: 7px 0 18px; border-radius: 99px; overflow: hidden; background: #e6ebf2; }
+    .progress-value { width: 58%; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--primary), #5b8cdb); }
+
+    .schedule-list { display: grid; gap: 8px; }
+
+    .schedule {
+      min-height: 56px;
+      padding: 9px 11px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      display: grid;
+      grid-template-columns: 62px 1fr auto;
+      align-items: center;
+      gap: 10px;
+      background: white;
+    }
+
+    .schedule-time { color: var(--primary); font-size: 11px; font-weight: 900; }
+    .schedule-time span { display: block; margin-top: 3px; color: var(--muted); font-size: 8px; font-weight: 700; }
+    .schedule-title { font-size: 11px; font-weight: 850; }
+    .schedule-meta { margin-top: 4px; display: flex; align-items: center; gap: 5px; color: var(--muted); font-size: 8px; font-weight: 700; }
+    .tag { padding: 2px 5px; border-radius: 99px; color: var(--purple); background: var(--purple-soft); font-size: 7px; font-weight: 900; }
+    .tag.flex { color: var(--primary); background: var(--primary-soft); }
+    .stars { color: #f1a928; letter-spacing: 1px; }
+    .status { min-width: 43px; padding: 5px 7px; border-radius: 99px; color: var(--success); background: var(--success-soft); text-align: center; font-size: 7px; font-weight: 900; }
+    .schedule.partial { border-color: #ebdcae; background: #fffdf5; }
+    .schedule.partial .status { color: var(--warning); background: var(--warning-soft); }
+
+    .ai-note {
+      margin-top: 13px;
+      padding: 10px 12px;
+      border: 1px solid #cad9f1;
+      border-radius: 11px;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      color: #315f9f;
+      background: var(--primary-soft);
+      font-size: 9px;
+      font-weight: 800;
+    }
+
+    .ai-spark { width: 24px; height: 24px; border-radius: 8px; display: grid; place-items: center; color: white; background: var(--primary); font-size: 11px; }
+
+    .bottom-panel {
+      padding: 13px 17px;
+      border: 1px solid rgba(226, 231, 239, .94);
+      border-radius: 18px;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 18px;
+      background: rgba(255, 255, 255, .8);
+      box-shadow: 0 10px 30px rgba(30, 42, 61, .05);
+    }
+
+    .demo-label { min-width: 118px; }
+    .demo-label strong { display: block; font-size: 12px; }
+    .demo-label span { display: block; margin-top: 4px; color: var(--muted); font-size: 9px; font-weight: 700; }
+
+    .flow { display: flex; align-items: center; justify-content: center; min-width: 0; }
+    .flow-step { display: flex; align-items: center; gap: 7px; color: var(--ink-soft); font-size: 10px; font-weight: 800; white-space: nowrap; }
+    .flow-step b { width: 23px; height: 23px; border-radius: 8px; display: grid; place-items: center; color: var(--primary); background: var(--primary-soft); font-size: 9px; }
+    .flow-line { width: clamp(16px, 2.3vw, 42px); height: 1px; margin: 0 8px; background: var(--line); }
+
+    .stack { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
+    .stack span { padding: 6px 8px; border: 1px solid var(--line); border-radius: 8px; color: var(--ink-soft); background: #fff; font-size: 8px; font-weight: 850; }
+
+    .shortcut {
+      position: absolute;
+      right: clamp(24px, 3vw, 48px);
+      bottom: 4px;
+      color: #a0a8b5;
+      font-size: 8px;
+      font-weight: 700;
+      opacity: .7;
+    }
+
+    @media (max-width: 1120px) {
+      .slide { overflow: visible; }
+      .main-grid { grid-template-columns: 1fr; }
+      .pitch { padding-bottom: 0; }
+      .app-stage { padding-top: 0; }
+      .browser { transform: none; }
+      .bottom-panel { grid-template-columns: 1fr; }
+      .demo-label { text-align: center; }
+      .stack { justify-content: center; }
+      .shortcut { display: none; }
+    }
+
+    @media (max-width: 700px) {
+      .slide { padding: 20px; }
+      .brand-caption, .timer { display: none; }
+      .main-grid { grid-template-columns: minmax(0, 1fr); }
+      h1 { font-size: 40px; }
+      .feature-grid { grid-template-columns: 1fr; }
+      .browser { min-height: 440px; border-radius: 18px; }
+      .app-body { min-height: 395px; grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .dashboard { padding: 20px 16px; }
+      .flow { flex-wrap: wrap; gap: 8px; }
+      .flow-line { display: none; }
+      .schedule { grid-template-columns: 52px 1fr; }
+      .schedule .status { display: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; }
+    }
+
+    @media print {
+      @page { size: 16in 9in; margin: 0; }
+      body { background: white; }
+      .slide { width: 16in; height: 9in; min-height: 0; padding: .38in .45in; gap: .18in; }
+      .timer, .shortcut { display: none; }
+      .browser { transform: none; box-shadow: 0 15px 40px rgba(30, 42, 61, .12); }
+    }
+  </style>
+</head>
+<body>
+  <main class="slide" aria-label="메밀 프로젝트 5분 발표 자료">
+    <header class="topbar">
+      <div class="brand" aria-label="메밀">
+        <svg class="brand-mark" viewBox="0 0 64 64" role="img" aria-label="메밀 로고">
+          <rect width="64" height="64" rx="17" fill="#315EA8"/>
+          <g fill="#FAFCFF" stroke="#D7E5FA" stroke-width=".8">
+            <ellipse cx="32" cy="15" rx="6" ry="12"/>
+            <ellipse cx="32" cy="49" rx="6" ry="12"/>
+            <ellipse cx="15" cy="32" rx="12" ry="6"/>
+            <ellipse cx="49" cy="32" rx="12" ry="6"/>
+            <ellipse cx="20" cy="20" rx="6" ry="12" transform="rotate(-45 20 20)"/>
+            <ellipse cx="44" cy="44" rx="6" ry="12" transform="rotate(-45 44 44)"/>
+            <ellipse cx="44" cy="20" rx="12" ry="6" transform="rotate(-45 44 20)"/>
+            <ellipse cx="20" cy="44" rx="12" ry="6" transform="rotate(-45 20 44)"/>
+          </g>
+          <circle cx="32" cy="32" r="6.2" fill="#E7A0AC"/>
+          <circle cx="32" cy="32" r="1.15" fill="#B76372"/>
+        </svg>
+        <div>
+          <div class="brand-name">메밀</div>
+          <div class="brand-caption">PERSONAL SCHEDULE PLANNER</div>
+        </div>
+      </div>
+
+      <div class="top-actions">
+        <button class="timer" id="timer" type="button" aria-label="5분 발표 타이머 시작" title="클릭: 시작·일시정지 / 더블클릭: 초기화">05:00</button>
+        <a class="live-link" href="https://memil.onrender.com" target="_blank" rel="noopener noreferrer">LIVE DEMO</a>
+      </div>
+    </header>
+
+    <div class="main-grid">
+      <section class="pitch" aria-labelledby="pitch-title">
+        <p class="eyebrow">5 MINUTE PROJECT PITCH</p>
+        <h1 id="pitch-title">오늘 무엇부터 할지,<br><em>메밀이 정리합니다.</em></h1>
+        <p class="lead">
+          단순히 일정을 저장하는 달력을 넘어, <strong>고정 일정과 유동 일정을 구분</strong>하고
+          오늘 실행할 계획부터 완료 기록까지 한곳에서 관리하는 개인 일정 플래너입니다.
+        </p>
+
+        <div class="feature-grid" aria-label="핵심 기능">
+          <article class="feature">
+            <div class="feature-icon">01</div>
+            <div><strong>고정 · 유동 일정</strong><span>시간 제약에 맞춘 일정 등록과 충돌 확인</span></div>
+          </article>
+          <article class="feature">
+            <div class="feature-icon">02</div>
+            <div><strong>완료 · 부분 완료</strong><span>진행 결과와 실제 소요 시간을 기록</span></div>
+          </article>
+          <article class="feature">
+            <div class="feature-icon">AI</div>
+            <div><strong>남은 시간 예측</strong><span>OpenAI로 부분 완료 일정의 잔여 시간 보조</span></div>
+          </article>
+          <article class="feature">
+            <div class="feature-icon">ID</div>
+            <div><strong>사용자별 데이터 분리</strong><span>로그인 계정마다 일정과 설정을 안전하게 분리</span></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="app-stage" aria-label="메밀 오늘 화면 예시">
+        <div class="browser">
+          <div class="browser-bar" aria-hidden="true">
+            <i class="dot"></i><i class="dot"></i><i class="dot"></i>
+            <div class="address">memil.onrender.com / schedules / today</div>
+          </div>
+
+          <div class="app-body">
+            <aside class="sidebar" aria-hidden="true">
+              <div class="side-brand"><span class="mini-mark">메</span> 메밀</div>
+              <div class="nav-item active">오늘</div>
+              <div class="nav-item">일정</div>
+              <div class="nav-item">완료 일정</div>
+              <div class="nav-item">체크</div>
+              <div class="nav-item">설정</div>
+              <div class="nav-item sync">동기화됨</div>
+            </aside>
+
+            <div class="dashboard">
+              <div class="dashboard-header">
+                <div><small>TODAY PLAN</small><h2>오늘의 일정</h2></div>
+                <div class="add-button">＋ 일정 추가</div>
+              </div>
+
+              <div class="summary-row" aria-hidden="true">
+                <div class="summary-card"><span>전체 일정</span><strong>4</strong></div>
+                <div class="summary-card"><span>완료</span><strong>2</strong></div>
+                <div class="summary-card"><span>남은 일정</span><strong>2</strong></div>
+              </div>
+
+              <div class="progress-label"><span>오늘 진행률</span><span>58%</span></div>
+              <div class="progress-track"><div class="progress-value"></div></div>
+
+              <div class="schedule-list">
+                <article class="schedule">
+                  <div class="schedule-time">10:00<span>~ 11:00</span></div>
+                  <div><div class="schedule-title">프로젝트 발표 준비</div><div class="schedule-meta"><span class="tag">고정 일정</span><span class="stars">★★★</span></div></div>
+                  <div class="status">완료</div>
+                </article>
+                <article class="schedule partial">
+                  <div class="schedule-time">14:00<span>90분 예상</span></div>
+                  <div><div class="schedule-title">발표 시연 최종 점검</div><div class="schedule-meta"><span class="tag flex">유동 일정</span><span class="stars">★★</span></div></div>
+                  <div class="status">부분 완료</div>
+                </article>
+                <article class="schedule">
+                  <div class="schedule-time">16:30<span>~ 17:00</span></div>
+                  <div><div class="schedule-title">결과 정리 및 제출</div><div class="schedule-meta"><span class="tag">고정 일정</span><span class="stars">★★</span></div></div>
+                  <div class="status">예정</div>
+                </article>
+              </div>
+
+              <div class="ai-note"><span class="ai-spark">✦</span>AI가 부분 완료 내용을 바탕으로 남은 시간을 예측합니다.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <footer class="bottom-panel">
+      <div class="demo-label"><strong>발표는 이렇게</strong><span>설명 2분 + 시연 3분</span></div>
+      <div class="flow" aria-label="발표 시연 순서">
+        <div class="flow-step"><b>1</b>로그인</div><i class="flow-line"></i>
+        <div class="flow-step"><b>2</b>일정 추가</div><i class="flow-line"></i>
+        <div class="flow-step"><b>3</b>오늘 계획</div><i class="flow-line"></i>
+        <div class="flow-step"><b>4</b>부분 완료 + AI</div>
+      </div>
+      <div class="stack" aria-label="기술 스택"><span>Django</span><span>PostgreSQL</span><span>OpenAI</span><span>Render</span></div>
+    </footer>
+
+    <div class="shortcut" aria-hidden="true">F 전체 화면 · 타이머 클릭 시작</div>
+  </main>
+
+  <script>
+    (() => {
+      const timer = document.getElementById('timer');
+      let remaining = 300;
+      let intervalId = null;
+
+      const paint = () => {
+        const minutes = String(Math.floor(remaining / 60)).padStart(2, '0');
+        const seconds = String(remaining % 60).padStart(2, '0');
+        timer.textContent = `${minutes}:${seconds}`;
+        timer.classList.toggle('running', intervalId !== null);
+      };
+
+      const pause = () => {
+        if (intervalId !== null) window.clearInterval(intervalId);
+        intervalId = null;
+        paint();
+      };
+
+      const start = () => {
+        if (remaining <= 0) remaining = 300;
+        intervalId = window.setInterval(() => {
+          remaining -= 1;
+          if (remaining <= 0) {
+            remaining = 0;
+            pause();
+          }
+          paint();
+        }, 1000);
+        paint();
+      };
+
+      timer.addEventListener('click', () => intervalId === null ? start() : pause());
+      timer.addEventListener('dblclick', () => {
+        pause();
+        remaining = 300;
+        paint();
+      });
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key.toLowerCase() === 'f') {
+          if (document.fullscreenElement) document.exitFullscreen();
+          else document.documentElement.requestFullscreen?.();
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
